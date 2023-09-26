@@ -1,0 +1,14 @@
+services:
+  app:
+    container_name: app_bolt
+    build: ./.docker/bolt
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npm run start
+    restart: always
+    environment:
+      TZ: Asia/Tokyo
+      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
+      SLACK_APP_TOKEN: ${SLACK_APP_TOKEN}
+      PRIVATE_KEY_DECRYPTION_PASSPHRASE: ${PRIVATE_KEY_DECRYPTION_PASSPHRASE}
