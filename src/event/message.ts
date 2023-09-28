@@ -4,6 +4,7 @@ import { updateMailBoxURL } from "../utils/sqlite/updateMailBoxURL";
 import { initDB } from "../utils/sqlite/initiDB";
 import { getWaitList } from "../utils/sqlite/getWaitList";
 import { updateMailJobComplete } from "../utils/sqlite/updateMailJobComplete";
+import { sendPostMessage } from "../utils/slack/sendPostMessage";
 
 export const messageEvent = async (event: any) => {
   const { client, message } = event;
@@ -62,19 +63,7 @@ export const messageEvent = async (event: any) => {
     // wait list 宛にURLを送信
     const waitList = await getWaitList(db, mailID);
     for (const { slack_id } of waitList) {
-      const userChannel = await getChannelIDByUserID(slack_id);
-      await client.chat.postMessage({
-        channel: userChannel.id,
-        text: `:email: *<${file.permalink}|${
-          mailInfo.subject
-        }>*\n  送信日: ${convertDateFormat(mailInfo.sentDate)}\n  送信者: ${
-          mailInfo.from
-        }\n  送信先: ${mailInfo.to}${
-          mailInfo.cc ? "\n  cc: " + mailInfo.cc : ""
-        }`,
-        unfurl_links: true,
-        unfurl_media: true,
-      });
+      await sendPostMessage(slack_id, mailInfo, file.permalink);
       await updateMailJobComplete(db, mailID, slack_id);
     }
   }

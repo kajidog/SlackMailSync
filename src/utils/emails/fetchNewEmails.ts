@@ -4,9 +4,6 @@ import { createReplayText } from "./createReplayText";
 const RETRY_COUNT = 5;
 const MAIL_LENGTH = 1;
 
-// kajiwara@icraft.jp
-// m0GYP1MH
-
 // SMTPs : goat-white-0f95da46fac3796a.znlc.jp (Port:465)
 // POP3s : goat-white-0f95da46fac3796a.znlc.jp (Port:995)
 // IMAPs : goat-white-0f95da46fac3796a.znlc.jp (Port:993)

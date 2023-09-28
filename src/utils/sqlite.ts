@@ -1,15 +1,5 @@
+import { Email } from "mail_box";
 import sqlite3 from "sqlite3";
-
-type Email = {
-  id: number;
-  subject: string;
-  sentDate: string;
-  from: string;
-  to: string;
-  cc: string;
-  body: string;
-  message_id: string;
-};
 
 class DatabaseHandler {
   private db: sqlite3.Database;
