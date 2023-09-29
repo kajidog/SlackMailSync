@@ -22,11 +22,10 @@ export const insertNewMail =
     //メールが新規もしくはURLが設定されていない場合は、DMに転送待ちに登録
     if (!existing || !existing.url) {
       await insertJobQueue(db, slackId)(email);
-      return false;
     }
 
     //　すでにURLが設定されている場合
-    if (existing.url) {
+    if (existing?.url) {
       await sendPostMessage(slackId, existing, existing.url);
       return false;
     }
