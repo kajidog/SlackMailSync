@@ -8,6 +8,7 @@ export const IMAP_Job = async (): Promise<void> => {
   const config = await getIMAP_Job(db);
 
   try {
+    await delay(10);
     if (config) {
       console.log("job done", config.slack_id);
 
@@ -16,7 +17,7 @@ export const IMAP_Job = async (): Promise<void> => {
   } catch (error) {
     console.log(error, config);
   }
-  await delay(30);
+  await delay(20);
   return IMAP_Job();
 };
 
