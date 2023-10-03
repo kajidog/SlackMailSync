@@ -1,5 +1,7 @@
 import { Block, KnownBlock } from "@slack/bolt";
 import { app } from "../app";
+import { parseISO, format } from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
 
 export async function getChannelIDByUserID(userId: string) {
   return await app.client.conversations
@@ -35,14 +37,15 @@ export async function sendMessageWithBlock(
 
 export const createTimeStamp = () => new Date().toISOString();
 
-export function convertDateFormat(dateStr: string) {
-  const date = new Date(dateStr);
+export function convertDateFormat(
+  isoStr: string,
+  timezone: string = "Asia/Tokyo"
+) {
+  const date = parseISO(isoStr);
 
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const hours = String(date.getUTCHours()).padStart(2, "0");
-  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+  // タイムゾーンに合わせて変換
+  const zonedDate = utcToZonedTime(date, timezone);
 
-  return `${year}/${month}/${day} ${hours}:${minutes}`;
+  // yyyy/mm/dd HH:MM:SS形式にフォーマットして返す
+  return format(zonedDate, "yyyy/MM/dd HH:mm:ss");
 }
