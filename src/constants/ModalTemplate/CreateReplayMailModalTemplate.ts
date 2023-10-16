@@ -37,7 +37,7 @@ export const CreateReplayMailModalTemplate = (id: string, subject: string, from:
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `:wave: Hey David!\n\n*差出人: * ${from}`,
+          text: `:wave: *差出人: * ${from}`,
         },
       },
       {
