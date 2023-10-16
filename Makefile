@@ -15,6 +15,11 @@ restart:
 	@make up
 build:
 	docker compose exec app npm run build
+prod-build:
+	docker compose up -d
+	docker compose exec app npm run build
+	docker compose down --remove-orphans
+	@make prod-up
 prod-up:
 	docker compose -f compose.prod.yml up -d
 prod-stop:

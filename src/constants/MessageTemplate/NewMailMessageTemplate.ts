@@ -16,15 +16,15 @@ export const NewMailMessageTemplate = (mailInfo: Email, url: string) => {
       fields: [
         {
           type: 'mrkdwn',
+          text: `*送信元:* ${mailInfo.from}`,
+        },
+        {
+          type: 'mrkdwn',
           text: `*送信日:* ${convertDateFormat(mailInfo.sentDate)}`,
         },
         {
           type: 'mrkdwn',
           text: `*宛先:* ${mailInfo.to}`,
-        },
-        {
-          type: 'mrkdwn',
-          text: `*送信元:* ${mailInfo.from}`,
         },
         {
           type: 'mrkdwn',
