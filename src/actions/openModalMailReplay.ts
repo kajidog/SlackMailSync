@@ -13,9 +13,9 @@ export const openModalMailReplay = async (e: BlockButtonActionEvent) => {
   const mailId = e.payload.value;
   const mailInfo = await getMailInfo(db, mailId);
   const smtpConfig = await getSMTP_Config(db, body.user.id);
+  db.close();
 
   if (!mailId || !mailInfo || !smtpConfig) {
-    db.close();
     return;
   }
   e.client.views.open({
@@ -25,7 +25,5 @@ export const openModalMailReplay = async (e: BlockButtonActionEvent) => {
       callback_id: callbackIds.MAIL_REPLAY_MODAL,
     },
   });
-
-  db.close();
   return;
 };

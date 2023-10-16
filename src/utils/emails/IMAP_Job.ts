@@ -7,6 +7,7 @@ export const IMAP_Job = async (): Promise<void> => {
   console.log('job ready');
   const db = await initDB();
   const config = await getIMAP_Job(db);
+  db.close();
 
   try {
     await delay(5);
@@ -17,13 +18,12 @@ export const IMAP_Job = async (): Promise<void> => {
   } catch (error) {
     console.log(error, config);
   }
-  db.close();
   await delay(15);
   return IMAP_Job();
 };
 
 function delay(seconds: number): Promise<void> {
   return new Promise((resolve) => {
-    setTimeout(resolve, seconds * 1000); // 秒をミリ秒に変換
+    setTimeout(resolve, seconds * 1000);
   });
 }
