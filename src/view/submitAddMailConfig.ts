@@ -10,6 +10,7 @@ export const submitAddMailConfig = async (e: ViewSubmitEvent) => {
   const db = await initDB();
   const data = getMailConfigValue(view.state.values); // フォームの内容取得
   await upsertMailServerConfig(db, body.user.id, data); // DBに内容を保存
+  db.close();
   ack();
   sendHomeTab(e, body.user.id);
 };

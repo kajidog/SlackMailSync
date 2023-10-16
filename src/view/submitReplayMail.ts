@@ -15,6 +15,7 @@ export const submitReplayMail = async (e: ViewSubmitEvent) => {
     const data = await getReplayMailValue(view.state.values); // フォームの内容取得
     const smtpConfig = await getSMTP_Config(db, body.user.id); // ユーザーのSMTPの設定取得
     const ogMail = await getMailInfo(db, data.id); // フォームのメール内容を取得
+    db.close();
     smtpConfig && sendMailBySMTP(smtpConfig, data, ogMail); // メール送信
     ack();
   } catch (error) {

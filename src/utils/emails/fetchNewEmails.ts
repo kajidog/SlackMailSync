@@ -19,7 +19,7 @@ export interface MailInfo {
 }
 
 export function fetchNewEmails(imap: Imap, callback: (mail: MailInfo) => Promise<boolean>, latestUid: number, retryCount = 0) {
-  return new Promise<number>((resolveALL) => {
+  return new Promise<[number, Imap]>((resolveALL) => {
     const fetch = imap.fetch(`${latestUid - (MAIL_LENGTH - 1)}:${latestUid}`, {
       bodies: ['HEADER', 'TEXT'],
       struct: true,
@@ -80,12 +80,12 @@ export function fetchNewEmails(imap: Imap, callback: (mail: MailInfo) => Promise
       // 終了条件
       // 取得件数と新着件数が同じ　かつ　ネストが指定回数以下
       // 上記の場合は再起的に再度メールを取得
-      if (newEmailCount === MAIL_LENGTH && retryCount < RETRY_COUNT) {
+      if (0 < newEmailCount && retryCount < RETRY_COUNT) {
         resolveALL(await fetchNewEmails(imap, callback, latestUid - MAIL_LENGTH, retryCount + 1));
         return;
       } else {
         // そうでない場合は終了
-        resolveALL(newEmailCount + MAIL_LENGTH * retryCount);
+        resolveALL([newEmailCount + MAIL_LENGTH * retryCount, imap]);
       }
     });
   });

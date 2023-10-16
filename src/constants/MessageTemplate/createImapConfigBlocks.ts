@@ -8,6 +8,8 @@ export const createImapConfigBlocks = async (slackId: string, isActionDisable?: 
   const config = await getIMAP_Config(db, slackId);
   const smtpConfig = await getSMTP_Config(db, slackId);
 
+  db.close();
+
   if (!config && !isActionDisable) {
     return [
       {

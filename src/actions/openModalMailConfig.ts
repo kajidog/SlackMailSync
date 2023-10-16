@@ -18,5 +18,8 @@ export const openModalMailConfig = async (e: BlockButtonActionEvent) => {
       callback_id: callbackIds.MAIL_CONFIG_MODAL,
     },
   });
+
+  db.close();
+
   return;
 };

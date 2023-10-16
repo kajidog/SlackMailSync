@@ -9,16 +9,16 @@ export const IMAP_Job = async (): Promise<void> => {
   const config = await getIMAP_Job(db);
 
   try {
-    await delay(10);
+    await delay(5);
     if (config) {
       console.log('job done', config.slack_id);
-
       await fetchNewMail(config.slack_id);
     }
   } catch (error) {
     console.log(error, config);
   }
-  await delay(20);
+  db.close();
+  await delay(15);
   return IMAP_Job();
 };
 
