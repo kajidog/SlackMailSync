@@ -7,4 +7,5 @@ export type Email = {
   cc: string;
   body: string;
   url?: string;
+  references?: string;
 };

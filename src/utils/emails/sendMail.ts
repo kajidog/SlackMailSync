@@ -1,11 +1,12 @@
-import { ParsedMail } from "mailparser";
-import nodemailer from "nodemailer";
-import Mail from "nodemailer/lib/mailer";
-import { SLACK_EMAIL_BOX_CHANNEL, SYSTEM_SMTP_CONFIG } from "../../constants";
+import { ParsedMail } from 'mailparser';
+import nodemailer from 'nodemailer';
+import Mail from 'nodemailer/lib/mailer';
+import { SLACK_EMAIL_BOX_CHANNEL, SYSTEM_SMTP_CONFIG } from '../../constants';
 
+// システムのSMTPサーバを利用してメール送信
 export function sendEmail(parsedEmail: ParsedMail) {
   const transporter = nodemailer.createTransport({ ...SYSTEM_SMTP_CONFIG });
-  const messageId = parsedEmail.messageId || "";
+  const messageId = parsedEmail.messageId || '';
 
   const senderAddress = `"${messageId}" <${SYSTEM_SMTP_CONFIG.auth.user}>`;
 
@@ -23,7 +24,7 @@ export function sendEmail(parsedEmail: ParsedMail) {
       if (error) {
         reject(error);
       } else {
-        console.log("Email sent: " + info.response);
+        console.log('Email sent: ' + info.response);
         resolve(info);
       }
     });

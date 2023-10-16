@@ -1,51 +1,51 @@
-import { Block, KnownBlock } from "@slack/bolt";
-import { app } from "../app";
-import { parseISO, format } from "date-fns";
-import { utcToZonedTime } from "date-fns-tz";
+import { parseISO, format } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
-export async function getChannelIDByUserID(userId: string) {
-  return await app.client.conversations
-    .open({
-      users: userId,
-    })
-    .then(({ channel }) => channel);
-}
-
-// DMへメッセージを送信
-export async function sendMessageWithBlock(
-  userId: string,
-  blocks?: (Block | KnownBlock)[],
-  text?: string
-) {
-  try {
-    // ユーザーとのDMのチャンネルIDを取得
-    const { channel } = await app.client.conversations.open({
-      users: userId,
-    });
-
-    const result = await app.client.chat.postMessage({
-      channel: channel.id,
-      blocks,
-      text,
-    });
-
-    console.log(result);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
+// iso形式で現在のタイムスタンプを返す関数
 export const createTimeStamp = () => new Date().toISOString();
 
-export function convertDateFormat(
-  isoStr: string,
-  timezone: string = "Asia/Tokyo"
-) {
+// iso時間を指定のタイムゾーンに変換する関数
+export function convertDateFormat(isoStr: string, timezone: string = 'Asia/Tokyo') {
   const date = parseISO(isoStr);
-
-  // タイムゾーンに合わせて変換
   const zonedDate = utcToZonedTime(date, timezone);
+  return format(zonedDate, 'yyyy/MM/dd HH:mm:ss');
+}
 
-  // yyyy/mm/dd HH:MM:SS形式にフォーマットして返す
-  return format(zonedDate, "yyyy/MM/dd HH:mm:ss");
+// 指定の文字に制限して、分割する関数
+export function splitAndProcess<T>(input: string, length: number, processor?: (chunk: string) => T): T[] {
+  const result: T[] = [];
+
+  let start = 0;
+
+  while (start < input.length) {
+    let end = start + length;
+    if (end < input.length) {
+      const lastNewLinePos = input.lastIndexOf('\n', end);
+      if (lastNewLinePos > start) {
+        end = lastNewLinePos;
+      }
+    }
+    const chunk = input.substring(start, end);
+    result.push(processor ? processor(chunk) : (chunk as unknown as T));
+
+    start = end;
+  }
+
+  return result;
+}
+
+// 指定の区切り文字で分割する関数
+export function splitStringByDelimiters(target: string, delimiters: string[]): string[] {
+  const regex = new RegExp(delimiters.join('|'), 'g');
+  return target
+    .split(regex)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+}
+
+// yyyy-MM-dd HH:mmのフォーマットに変換
+export function formatDate(inputDateStr: string, timezone: string = 'Asia/Tokyo'): string {
+  const parsedDate = new Date(inputDateStr);
+  const zonedDate = utcToZonedTime(parsedDate, timezone);
+  return format(zonedDate, 'yyyy-MM-dd HH:mm');
 }

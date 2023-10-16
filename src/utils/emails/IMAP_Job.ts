@@ -1,16 +1,17 @@
-import { fetchNewMail } from "../../mail/fetchNewMail";
-import { getIMAP_Job } from "../sqlite/getIMAP_Job";
-import { initDB } from "../sqlite/initiDB";
+import { fetchNewMail } from '../../mail/fetchNewMail';
+import { getIMAP_Job } from '../sqlite/getIMAP_Job';
+import { initDB } from '../sqlite/initiDB';
 
+// 定期的にIMAPからメールを取得する関数
 export const IMAP_Job = async (): Promise<void> => {
-  console.log("job done");
+  console.log('job ready');
   const db = await initDB();
   const config = await getIMAP_Job(db);
 
   try {
     await delay(10);
     if (config) {
-      console.log("job done", config.slack_id);
+      console.log('job done', config.slack_id);
 
       await fetchNewMail(config.slack_id);
     }

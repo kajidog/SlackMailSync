@@ -1,5 +1,5 @@
-import { SlackHomeOpenedEvent } from "slack";
-import { sendHomeTab } from "../slack";
+import { SlackHomeOpenedEvent } from 'slack';
+import { sendHomeTab } from '../utils/slack/sendHomeTab';
 
 export const appHomeOpened = async (e: SlackHomeOpenedEvent) => {
   const { event } = e;

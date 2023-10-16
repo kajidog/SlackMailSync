@@ -1,6 +1,7 @@
-import { Database } from "sqlite3";
+import { Database } from 'sqlite3';
 
-export const updateIMAP_Date = async (db: Database, slackId: string) => {
+// IMAPから取得した時間を記録
+export const updateIMAP_ExecutionTime = async (db: Database, slackId: string) => {
   // imap
   await new Promise(async (resolve) => {
     const stmt = db.prepare(`

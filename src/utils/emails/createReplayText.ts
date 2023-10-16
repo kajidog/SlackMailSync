@@ -3,11 +3,13 @@ type createReply = {
   date: string | Date;
   from: string;
 };
+
+// 返信のテキスト生成
 export function createReplayText(original: createReply) {
   const quotedBody = original.body
-    .split("\n")
+    .split('\n')
     .map((line) => `> ${line}`)
-    .join("\n");
-  const header = `On ${original.date}, ${original.from} wrote:\n\n`;
+    .join('\n');
+  const header = `On ${original.date}, ${original.from} wrote:\n`;
   return `${header}${quotedBody}`;
 }

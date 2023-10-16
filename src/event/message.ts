@@ -1,39 +1,18 @@
-import { convertDateFormat, getChannelIDByUserID } from "../utils";
-import { getEmailByMessageId } from "../utils/sqlite";
-import { updateMailBoxURL } from "../utils/sqlite/updateMailBoxURL";
-import { initDB } from "../utils/sqlite/initiDB";
-import { getWaitList } from "../utils/sqlite/getWaitList";
-import { updateMailJobComplete } from "../utils/sqlite/updateMailJobComplete";
-import { sendPostMessage } from "../utils/slack/sendPostMessage";
+import { getEmailByMessageId } from '../utils/sqlite';
+import { updateMailBoxURL } from '../utils/sqlite/updateMailBoxURL';
+import { initDB } from '../utils/sqlite/initiDB';
+import { getJobQueue } from '../utils/sqlite/getJobQueue';
+import { updateJobQueueExecutionTime } from '../utils/sqlite/updateJobQueueExecutionTime';
+import { sendPostMessage } from '../utils/slack/sendPostMessage';
 
 export const messageEvent = async (event: any) => {
-  const { client, message } = event;
-
-  if (message.thread_ts) {
-    try {
-      // conversations.repliesを使用してスレッド内の全メッセージを取得
-      const result = await client.conversations.replies({
-        channel: message.channel,
-        ts: message.thread_ts,
-      });
-
-      // 最初のメッセージ（スレッドの元のメッセージ）を取得
-      const originalMessage = result.messages[0];
-
-      // 元のメッセージの内容をログ出力
-      console.log(originalMessage.text);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   // ファイル共有以外のメッセージ
-  if (event.message.subtype !== "file_share") {
+  if (event.message.subtype !== 'file_share') {
     return;
   }
 
   // メールBOXチャンネル以外
-  if (event.message.channel !== "C034A889TSS") {
+  if (event.message.channel !== process.env.SLACK_MAIL_BOX_CHANNEL_ID) {
     return;
   }
 
@@ -43,7 +22,7 @@ export const messageEvent = async (event: any) => {
   }
 
   for (const file of event.message.files || []) {
-    if (file.filetype !== "email") {
+    if (file.filetype !== 'email') {
       break;
     }
     const mailID = file.from?.[0]?.name;
@@ -61,10 +40,10 @@ export const messageEvent = async (event: any) => {
     void (await updateMailBoxURL(db, mailID, file.permalink));
 
     // wait list 宛にURLを送信
-    const waitList = await getWaitList(db, mailID);
+    const waitList = await getJobQueue(db, mailID);
     for (const { slack_id } of waitList) {
       await sendPostMessage(slack_id, mailInfo, file.permalink);
-      await updateMailJobComplete(db, mailID, slack_id);
+      await updateJobQueueExecutionTime(db, mailID, slack_id);
     }
   }
 };

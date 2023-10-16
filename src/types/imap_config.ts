@@ -6,4 +6,5 @@ export type ImapConfig = {
   user: string;
   password: string;
   update_at?: string;
+  is_job?: string;
 };

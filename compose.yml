@@ -7,8 +7,4 @@ services:
     volumes:
       - .:/app
     command: npm run watch
-    environment:
-      TZ: Asia/Tokyo
-      SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
-      SLACK_APP_TOKEN: ${SLACK_APP_TOKEN}
-      PRIVATE_KEY_DECRYPTION_PASSPHRASE: ${PRIVATE_KEY_DECRYPTION_PASSPHRASE}
+    env_file: .env
