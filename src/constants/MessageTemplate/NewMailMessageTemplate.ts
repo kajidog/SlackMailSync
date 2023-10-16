@@ -28,7 +28,7 @@ export const NewMailMessageTemplate = (mailInfo: Email, url: string) => {
         },
         {
           type: 'mrkdwn',
-          text: `*CC:* ${mailInfo.cc}`,
+          text: `*CC:* ${mailInfo.cc || 'なし'}`,
         },
       ],
     },
