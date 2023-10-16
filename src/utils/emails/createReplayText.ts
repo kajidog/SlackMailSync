@@ -8,7 +8,7 @@ type createReply = {
 export function createReplayText(original: createReply) {
   const quotedBody = original.body
     .split('\n')
-    .map((line) => `> ${line}`)
+    .map((line) => `${line.charAt(0) !== '>' ? '> ' : '>'}${line}`)
     .join('\n');
   const header = `On ${original.date}, ${original.from} wrote:\n`;
   return `${header}${quotedBody}`;

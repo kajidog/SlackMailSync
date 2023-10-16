@@ -13,6 +13,7 @@ export const CreateReplayMailModalTemplate = (id: string, subject: string, from:
       },
     };
   });
+  const replaySubject = subject.substring(0, 3) !== 'Re:' ? 'Re: ' + subject : subject;
 
   return {
     type: 'modal',
@@ -47,7 +48,7 @@ export const CreateReplayMailModalTemplate = (id: string, subject: string, from:
         element: {
           type: 'plain_text_input',
           action_id: 'subject',
-          initial_value: `Re: ${subject}`,
+          initial_value: replaySubject,
         },
         label: {
           type: 'plain_text',
