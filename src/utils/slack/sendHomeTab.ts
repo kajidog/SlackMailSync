@@ -1,5 +1,5 @@
 import { Block, HomeView } from '@slack/bolt';
-import { createImapConfigBlocks } from '../../slack/createImapConfigBlocks';
+import { createImapConfigBlocks } from '../../constants/MessageTemplate/createImapConfigBlocks';
 
 export const sendHomeTab = async (e: any, user: string, blocks?: HomeView['blocks']) => {
   return e.client.views.publish({

@@ -1,7 +1,7 @@
-import { initDB } from '../utils/sqlite/initiDB';
-import { getIMAP_Config } from '../utils/sqlite/getIMAP_Config';
-import { actionIds } from '../constants';
-import { getSMTP_Config } from '../utils/sqlite/getSMTP_Config';
+import { initDB } from '../../utils/sqlite/initiDB';
+import { getIMAP_Config } from '../../utils/sqlite/getIMAP_Config';
+import { actionIds } from '..';
+import { getSMTP_Config } from '../../utils/sqlite/getSMTP_Config';
 
 export const createImapConfigBlocks = async (slackId: string, isActionDisable?: boolean) => {
   const db = await initDB();

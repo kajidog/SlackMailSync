@@ -1,7 +1,7 @@
 import { sendHomeTab } from '../utils/slack/sendHomeTab';
 import { fetchNewMail } from '../mail/fetchNewMail';
 import { BlockButtonActionEvent } from '../types/slack';
-import { createImapConfigBlocks } from '../slack/createImapConfigBlocks';
+import { createImapConfigBlocks } from '../constants/MessageTemplate/createImapConfigBlocks';
 
 // 手動でメール受信
 export const mailUpdate = async (e: BlockButtonActionEvent) => {
