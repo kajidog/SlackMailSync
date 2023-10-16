@@ -217,7 +217,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
           type: 'number_input',
           is_decimal_allowed: false,
           action_id: 'smtp_port',
-          initial_value: String(smtpConfig?.port),
+          initial_value: smtpConfig?.port ? String(smtpConfig?.port) : undefined,
         },
         label: {
           type: 'plain_text',
