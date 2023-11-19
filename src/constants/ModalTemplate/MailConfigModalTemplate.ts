@@ -1,9 +1,8 @@
 import { View } from '@slack/bolt';
 import { ViewSubmitViews } from '../../types/slack';
-import { SmtpConfig } from 'smtp_config';
-import { ImapConfig } from 'imap_config';
+import { AccountConfig } from 'account_config';
 
-export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: SmtpConfig): View => {
+export const MailConfigModalTemplate = (accountConfig?: AccountConfig): View => {
   return {
     type: 'modal',
     submit: {
@@ -36,7 +35,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
             text: 'username@icraft.jp',
             emoji: true,
           },
-          initial_value: imapConfig?.user,
+          initial_value: accountConfig?.user_name,
           action_id: 'username',
           focus_on_load: true,
         },
@@ -52,7 +51,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
         element: {
           type: 'plain_text_input',
           action_id: 'password',
-          initial_value: imapConfig?.password,
+          //initial_value: accountConfig?.password,
         },
         block_id: 'password',
       },
@@ -73,7 +72,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
               value: 'add_job',
             },
           ],
-          ...(imapConfig?.is_job
+          ...(accountConfig?.is_job
             ? {
                 initial_options: [
                   {
@@ -118,7 +117,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
         element: {
           type: 'plain_text_input',
           action_id: 'imap_host',
-          initial_value: imapConfig?.host,
+          initial_value: accountConfig?.imap_host,
         },
         block_id: 'imap_host',
       },
@@ -128,7 +127,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
           type: 'number_input',
           is_decimal_allowed: false,
           action_id: 'imap_port',
-          initial_value: imapConfig?.port,
+          initial_value: accountConfig?.imap_port,
         },
         label: {
           type: 'plain_text',
@@ -136,45 +135,6 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
           emoji: true,
         },
         block_id: 'imap_port',
-      },
-      {
-        type: 'input',
-        optional: true,
-
-        element: {
-          type: 'checkboxes',
-          options: [
-            {
-              text: {
-                type: 'plain_text',
-                text: 'secure',
-                emoji: true,
-              },
-              value: 'secure',
-            },
-          ],
-          action_id: 'imap_option',
-          ...(imapConfig?.secure
-            ? {
-                initial_options: [
-                  {
-                    text: {
-                      type: 'plain_text',
-                      text: 'secure',
-                      emoji: true,
-                    },
-                    value: 'secure',
-                  },
-                ],
-              }
-            : {}),
-        },
-        label: {
-          type: 'plain_text',
-          text: 'オプション',
-          emoji: true,
-        },
-        block_id: 'imap_option',
       },
       {
         type: 'divider',
@@ -206,7 +166,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
         element: {
           type: 'plain_text_input',
           action_id: 'smtp_host',
-          initial_value: smtpConfig?.host,
+          initial_value: accountConfig?.smtp_host,
         },
         block_id: 'smtp_host',
       },
@@ -217,7 +177,7 @@ export const MailConfigModalTemplate = (imapConfig: ImapConfig, smtpConfig: Smtp
           type: 'number_input',
           is_decimal_allowed: false,
           action_id: 'smtp_port',
-          initial_value: smtpConfig?.port ? String(smtpConfig?.port) : undefined,
+          initial_value: accountConfig?.smtp_port ? String(accountConfig?.smtp_port) : undefined,
         },
         label: {
           type: 'plain_text',

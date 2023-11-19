@@ -46,16 +46,6 @@ export const NewMailMessageTemplate = (mailInfo: Email, url: string) => {
           value: mailInfo.id,
           action_id: actionIds.MAIL_REPLAY,
         },
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            emoji: true,
-            text: '転送',
-          },
-          value: mailInfo.id,
-          action_id: actionIds.MAIL_FORWARD,
-        },
       ],
     },
   ];

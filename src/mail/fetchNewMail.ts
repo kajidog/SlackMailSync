@@ -3,48 +3,54 @@ import { fetchNewEmails } from '../utils/emails/fetchNewEmails';
 import { handleEmail } from '../utils/emails/handleEmail';
 import { insertMailBox } from '../utils/sqlite/insertMailBox';
 import { initDB } from '../utils/sqlite/initiDB';
-import { getIMAP_Config } from '../utils/sqlite/getIMAP_Config';
-import { updateIMAP_ExecutionTime } from '../utils/sqlite/updateIMAP_ExecutionTime';
+import { updateAccountExecutionTime } from '../utils/sqlite/updateAccountExecutionTime';
+import { getAccountConfigByName } from '../utils/sqlite/getAccountConfigByName';
 
-export async function fetchNewMail(slackId: string) {
+export async function fetchNewMail(slackId: string, username: string) {
   const db = await initDB();
-  const imapConfig = await getIMAP_Config(db, slackId);
+  const config = await getAccountConfigByName(db, slackId, username);
 
-  if (!imapConfig) {
+  if (!config || !config.imap_host) {
     db.close();
-    return;
+    return -1;
   }
+  await updateAccountExecutionTime(db, slackId, username);
 
   return new Promise<number>((resolve, reject) => {
     console.table({
-      imapConfig,
+      config,
     });
 
     const imap = new Imap({
-      host: imapConfig.host,
-      user: imapConfig.user,
-      password: imapConfig.password,
-      port: parseInt(imapConfig.port),
-      tls: !!imapConfig.secure,
+      host: config.imap_host,
+      user: config.user_name,
+      password: config.password,
+      port: parseInt(config.imap_port),
+      tls: !!config.secure,
     });
 
     imap.once('ready', () => {
       imap.openBox('INBOX', false, (err, box) => {
-        if (err) throw err;
+        if (err) {
+          console.error('INBOX error:', err);
+          db.close();
+          resolve(-1);
+          return;
+        }
         fetchNewEmails(imap, handleEmail(insertMailBox(db, slackId)), box.uidnext - 1).then(async ([count, imap]) => {
-          imap.end();
-          await updateIMAP_ExecutionTime(db, slackId);
+          await imap.end();
           db.close();
           resolve(count);
-        });
+        }).catch((err) => {
+          console.error('IMAP error:', err);
+          resolve(-1);
+        })
       });
     });
 
     imap.once('error', async (err: any) => {
       console.error('IMAP error:', err);
-      await updateIMAP_ExecutionTime(db, slackId);
-      db.close();
-      reject(err);
+      resolve(-1);
     });
 
     imap.once('end', function () {

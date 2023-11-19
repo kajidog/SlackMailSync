@@ -5,6 +5,10 @@ import { NewMailMessageTemplate } from '../../constants/MessageTemplate/NewMailM
 import { getChannelIDByUserID } from './getChannelIDByUserID';
 
 export const sendPostMessage = async (slack_id: string, mailInfo: Email, url: string) => {
+  if (slack_id === 'U01F68QPHJP' && -1 < mailInfo?.to?.indexOf('naganuma@icraft.jp')) {
+    return;
+  }
+
   const userChannel = await getChannelIDByUserID(slack_id); // 送信先のIDを取得
 
   // メッセージを生成して送信

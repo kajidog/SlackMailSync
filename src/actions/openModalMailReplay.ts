@@ -1,29 +1,35 @@
-import { fetchNewMail } from '../mail/fetchNewMail';
 import { BlockButtonActionEvent } from '../types/slack';
 import { CreateReplayMailModalTemplate } from '../constants/ModalTemplate/CreateReplayMailModalTemplate';
 import { callbackIds } from '../constants';
 import { getMailInfo } from '../utils/sqlite/getMailInfo';
 import { initDB } from '../utils/sqlite/initiDB';
-import { getSMTP_Config } from '../utils/sqlite/getSMTP_Config';
+import { getAccount_Config } from '../utils/sqlite/getAccountConfig';
+
+// メールの返信のモーダルを開く
 export const openModalMailReplay = async (e: BlockButtonActionEvent) => {
   const { body } = e;
   e.ack();
   console.log('ok', body.user.id);
+
+  // データ取得
   const db = await initDB();
   const mailId = e.payload.value;
   const mailInfo = await getMailInfo(db, mailId);
-  const smtpConfig = await getSMTP_Config(db, body.user.id);
+  const config = await getAccount_Config(db, body.user.id);
   db.close();
 
-  if (!mailId || !mailInfo || !smtpConfig) {
+  if (!mailId || !mailInfo || !config) {
     return;
   }
+
+  // 返信のモーダルを開く
   e.client.views.open({
     trigger_id: e.body['trigger_id'],
     view: {
-      ...CreateReplayMailModalTemplate(mailInfo.id, mailInfo.subject, smtpConfig.user, mailInfo.from, mailInfo.cc, mailInfo.body),
+      ...CreateReplayMailModalTemplate(mailInfo.id, mailInfo.subject, config[0].user_name, mailInfo.from, mailInfo.cc, mailInfo.body),
       callback_id: callbackIds.MAIL_REPLAY_MODAL,
     },
   });
+
   return;
 };

@@ -1,29 +1,29 @@
 import { fetchNewMail } from '../../mail/fetchNewMail';
-import { getIMAP_Job } from '../sqlite/getIMAP_Job';
+import { getAccountJob } from '../sqlite/getAccountJob';
 import { initDB } from '../sqlite/initiDB';
 
 // 定期的にIMAPからメールを取得する関数
 export const IMAP_Job = async (): Promise<void> => {
-  console.log('job ready');
-  const db = await initDB();
-  const config = await getIMAP_Job(db);
-  db.close();
 
+  console.log('job ready');
   try {
-    await delay(5);
+    setInterval(getMail, 15000)
+  } catch (error) {
+    console.log(error);
+  }
+  return;
+};
+
+async function getMail() {
+  const db = await initDB();
+  const config = await getAccountJob(db);
+  db.close();
+  try {
     if (config) {
       console.log('job done', config.slack_id);
-      await fetchNewMail(config.slack_id);
+      await fetchNewMail(config.slack_id, config.user_name);
     }
   } catch (error) {
     console.log(error, config);
   }
-  await delay(15);
-  return IMAP_Job();
-};
-
-function delay(seconds: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, seconds * 1000);
-  });
 }

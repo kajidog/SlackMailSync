@@ -7,38 +7,22 @@ export const upsertMailServerConfig = async (db: Database, slackId: string, form
 
   // imap
   await new Promise(async (resolve) => {
-    const stmt = db.prepare(`INSERT INTO imap_setting(slack_id, host, port, secure, user, password, update_at, is_job)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(slack_id) 
+    const stmt = db.prepare(`INSERT INTO account_setting(slack_id, imap_host, imap_port, smtp_host, smtp_port, secure, user_name, password, update_at, is_job)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(slack_id, user_name) 
         DO UPDATE SET
           slack_id = excluded.slack_id,
-          host = excluded.host,
-          port = excluded.port,
+          imap_host = excluded.imap_host,
+          imap_port = excluded.imap_port,
+          smtp_host = excluded.smtp_host,
+          smtp_port = excluded.smtp_port,
           secure = excluded.secure,
-          user = excluded.user,
+          user_name = excluded.user_name,
           password = excluded.password,
           update_at = excluded.update_at,
           is_job = excluded.is_job
           `);
-    stmt.run(slackId, imap.host, imap.port, true, info.username, info.password, null, info.option.add_job, resolve);
+    stmt.run(slackId, imap.host, imap.port, smtp.host, smtp.port, true, info.username, info.password, null, info.option.add_job, resolve);
     stmt.finalize();
   });
-
-  // smtp
-  if (smtp.host && smtp.port) {
-    await new Promise(async (resolve) => {
-      const stmt = db.prepare(`INSERT INTO smtp_setting(slack_id, host, port, secure, user, password)
-        VALUES(?, ?, ?, ?, ?, ?)
-        ON CONFLICT(slack_id) 
-        DO UPDATE SET
-          slack_id = excluded.slack_id,
-          host = excluded.host,
-          port = excluded.port,
-          secure = excluded.secure,
-          user = excluded.user,
-          password = excluded.password`);
-      stmt.run(slackId, smtp.host, smtp.port, true, info.username, info.password, resolve);
-      stmt.finalize();
-    });
-  }
 };

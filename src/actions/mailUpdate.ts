@@ -1,12 +1,19 @@
 import { sendHomeTab } from '../utils/slack/sendHomeTab';
 import { fetchNewMail } from '../mail/fetchNewMail';
 import { BlockButtonActionEvent } from '../types/slack';
-import { createImapConfigBlocks } from '../constants/MessageTemplate/createImapConfigBlocks';
+import { createEmailConfigBlocks } from '../constants/MessageTemplate/createEmailConfigBlocks';
 
 // 手動でメール受信
 export const mailUpdate = async (e: BlockButtonActionEvent) => {
   const { body } = e;
   e.ack();
+  const username = body.actions[0].value;
+
+  if (!username) {
+    return
+  }
+
+  // ユーザーのタブを読み込み中にしておく
   sendHomeTab(e, body.user.id, [
     {
       type: 'context',
@@ -18,10 +25,11 @@ export const mailUpdate = async (e: BlockButtonActionEvent) => {
         },
       ],
     },
-    ...(await createImapConfigBlocks(body.user.id, true)),
+    ...(await createEmailConfigBlocks(body.user.id, true)),
   ]);
 
-  const newCount = await fetchNewMail(body.user.id);
+  const newCount = await fetchNewMail(body.user.id, username);
+
   sendHomeTab(e, body.user.id, [
     {
       type: 'context',
@@ -33,6 +41,6 @@ export const mailUpdate = async (e: BlockButtonActionEvent) => {
         },
       ],
     },
-    ...(await createImapConfigBlocks(body.user.id)),
+    ...(await createEmailConfigBlocks(body.user.id)),
   ]);
 };

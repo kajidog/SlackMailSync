@@ -36,7 +36,7 @@ export const insertMailBox = (db: Database, slackId: string) => async (email: Ma
   if (!existing) {
     await new Promise(async (resolve) => {
       const stmt = db.prepare('INSERT INTO mail_box VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-      stmt.run(messageId, parsedEmail.subject, parsedEmail.date.toISOString(), from, to, cc, body, null, references, resolve);
+      stmt.run(messageId, parsedEmail.subject, parsedEmail.date?.toISOString() || "", from, to, cc, body, null, references, resolve);
       stmt.finalize();
     });
     try {

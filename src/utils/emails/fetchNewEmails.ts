@@ -2,7 +2,7 @@ import Imap from 'imap';
 import { ParsedMail, simpleParser } from 'mailparser';
 import { createReplayText } from './createReplayText';
 import { formatDate } from '..';
-const RETRY_COUNT = 5;
+const RETRY_COUNT = 10;
 const MAIL_LENGTH = 1;
 
 export interface MailInfo {

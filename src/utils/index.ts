@@ -45,6 +45,9 @@ export function splitStringByDelimiters(target: string, delimiters: string[]): s
 
 // yyyy-MM-dd HH:mmのフォーマットに変換
 export function formatDate(inputDateStr: string, timezone: string = 'Asia/Tokyo'): string {
+  if (inputDateStr === '' || !inputDateStr) {
+    return '';
+  }
   const parsedDate = new Date(inputDateStr);
   const zonedDate = utcToZonedTime(parsedDate, timezone);
   return format(zonedDate, 'yyyy-MM-dd HH:mm');
