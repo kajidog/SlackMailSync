@@ -33,7 +33,7 @@ Slackでメールを受信し、検索時にSlackのやり取りとメールの�
 
 注意：Slackのメール機能を使用するため、Slackが`Proプラン`以上の必要あり
 
-### Node.jの設定
+### Slack Bolt
 
 1. docker desktopをインストール
 2. ソースコードダウンロード
@@ -41,10 +41,9 @@ Slackでメールを受信し、検索時にSlackのやり取りとメールの�
    ```bash
    cd SlackMailSync
    cp .env.example .env
-   vim .env
    make init
    ```
-4. 以下のコマンドで起動
+4. SlackとSMTPの設定が完了し`.env`ファイル編集後、以下のコマンドで起動
    ```bash
    make up
    ```
