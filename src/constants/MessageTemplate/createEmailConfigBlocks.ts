@@ -16,13 +16,12 @@ export const createEmailConfigBlocks = async (slackId: string, isActionDisable?:
   let filters: { [user_name: string]: Filter[] } = {};
 
   ((await getAllMailFilter(db, slackId)) || []).forEach(filter => {
-    if (!filters[filter.filter_name]) {
+    if (!filters[filter.user_name]) {
       filters[filter.user_name] = [];
     }
     filters[filter.user_name].push(filter)
   })
   db.close();
-  console.log(filters);
 
   // 設定がまだの場合
   if (!config && !isActionDisable) {
@@ -35,7 +34,7 @@ export const createEmailConfigBlocks = async (slackId: string, isActionDisable?:
     accountBlocks = [
       ...accountBlocks,
       ...createAccountBlock(config, isActionDisable),
-      ...createFilterBlock(filters[config.user_name] || []),
+      ...createFilterBlock(filters[config.user_name] || [], isActionDisable),
       {
         type: 'divider',
       },
@@ -71,26 +70,67 @@ export const createEmailConfigBlocks = async (slackId: string, isActionDisable?:
 const FILTER_ACTION = {
   'default': '受信する',
   'block': '受信しない',
-  'forward_1': '指定のチャンネルに転送し、DMでに受信する',
+  'forward_1': '指定のチャンネルに転送し、DMでも受信する',
   'forward_2': '指定のチャンネルに転送し、DMには受信しない'
 } as any
 
-const createFilterBlock = (filters: Filter[]): (Block | KnownBlock)[] => {
-  return filters.map((filter) => {
+const createFilterBlock = (filters: Filter[], isActionDisable: boolean): (Block | KnownBlock)[] => {
+  let blocks: (Block | KnownBlock)[] = [];
+  filters.forEach((filter) => {
     const NAME = `*フィルター名: ${filter.filter_name}*`
+    const MEMO = `メモ: ${filter.memo ?? "なし"}`
     const PRIORITY = `優先度: ${filter.priority}`
     const ACTION_TYPE = `実行内容: ${FILTER_ACTION[filter.action_type]}`
-    const FORWARD = filter.action_type.indexOf('forward') === -1 ? '' : `転送先: ${filter.forward_channel.split(',').map(w => `<#${w}>`).join(' ')}`
-    return {
-      type: 'context',
-      elements: [
-        {
-          type: 'mrkdwn',
-          text: `${NAME}\n${PRIORITY}\n ${ACTION_TYPE}\n${FORWARD}`,
-        }
-      ],
-    }
+    const FORWARD = filter.action_type.indexOf('forward') === -1 ? '' : `転送先: ${filter.forward_channel.split(',').map(w => `<#${w}>`).join(' ')}`;
+
+
+    const ActionButton = isActionDisable ? [] : [
+      {
+        type: 'actions',
+        elements: [
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "詳細",
+              "emoji": true
+            },
+            "style": "primary",
+            value: filter.user_name + "--------" + filter.filter_name,
+            action_id: actionIds.OPEN_MODAL_MAIL_FILTER
+          },
+          {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "削除",
+              "emoji": true
+            },
+            "style": "danger",
+            value: filter.user_name + "--------" + filter.filter_name,
+            action_id: actionIds.DELETE_FILTER
+          },
+        ],
+      },
+    ]
+
+    blocks = [
+      ...blocks,
+      {
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `${NAME}\n${PRIORITY}\n${MEMO}\n${ACTION_TYPE}\n${FORWARD}`,
+          },
+
+        ],
+      },
+      ...ActionButton
+    ]
   })
+
+  return blocks
 }
 
 // _______________________

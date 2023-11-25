@@ -11,6 +11,7 @@ import { submitReplayMail } from './view/submitReplayMail';
 import { deleteMailConfig } from './actions/deleteMailConfig';
 import { openModalMailFilter } from './actions/openModalMailFilter';
 import { submitMailFilter } from './view/submitMailFilter';
+import { deleteMailFilter } from './actions/deleteMailFilter';
 
 export const app = new App({
   logLevel: LogLevel.INFO,
@@ -24,6 +25,7 @@ app.action(actionIds.OPEN_MODAL_MAIL_CONFIG, openModalMailConfig); // メール�
 app.action(actionIds.OPEN_MODAL_MAIL_FILTER, openModalMailFilter); // メールフィルター設定
 app.action(actionIds.MAIL_REPLAY, openModalMailReplay); // メール返信ボタンクリック
 app.action(actionIds.DELETE_CONFIG, deleteMailConfig); // メール削除
+app.action(actionIds.DELETE_FILTER, deleteMailFilter); // フィルター削除
 
 app.view(callbackIds.MAIL_CONFIG_MODAL, submitAddMailConfig); // メール設定更新
 app.view(callbackIds.MAIL_REPLAY_MODAL, submitReplayMail); // 返信メール送信

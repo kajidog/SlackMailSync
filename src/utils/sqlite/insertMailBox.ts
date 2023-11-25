@@ -7,7 +7,7 @@ import { Email } from 'mail_box';
 import { getSendHistory } from './getSendHistory';
 import { insertSendHistory } from './insertSendHistory';
 
-export const insertMailBox = (db: Database, slackId: string) => async (email: MailInfo) => {
+export const insertMailBox = (db: Database, slackId: string, user_name: string) => async (email: MailInfo) => {
   const { id, parsedEmail, subject, cc, from, to, body, messageId, references } = email;
 
   const existing = await new Promise<Email | null>((resolve) => {
@@ -18,7 +18,7 @@ export const insertMailBox = (db: Database, slackId: string) => async (email: Ma
 
   //メールが新規もしくはURLが設定されていない場合は、DMに転送待ちに登録
   if (!existing || !existing.url) {
-    await insertJobQueue(db, slackId)(email);
+    await insertJobQueue(db, slackId, user_name)(email);
   }
 
   //　すでにURLが設定されている場合
@@ -27,7 +27,7 @@ export const insertMailBox = (db: Database, slackId: string) => async (email: Ma
     if (history) {
       return false;
     }
-    await sendPostMessage(slackId, existing, existing.url);
+    await sendPostMessage(slackId, user_name, existing, existing.url);
     await insertSendHistory(db, slackId, existing.id);
     return true;
   }

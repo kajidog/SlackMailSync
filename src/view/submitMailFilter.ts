@@ -6,6 +6,7 @@ import { getMailInfo } from '../utils/sqlite/getMailInfo';
 import { getAccount_Config } from '../utils/sqlite/getAccountConfig';
 import { getFilterValue } from '../constants/ModalTemplate/MailFilterModalTemplate';
 import { upsertFilter } from '../utils/sqlite/upsertFilter';
+import { sendHomeTab } from '../utils/slack/sendHomeTab';
 
 export const submitMailFilter = async (e: ViewSubmitEvent) => {
   const { view, ack, body } = e as any;
@@ -18,5 +19,7 @@ export const submitMailFilter = async (e: ViewSubmitEvent) => {
     console.log('fail send mail');
     console.log(error);
   }
-  db.close()
+  db.close();
+  sendHomeTab(e, body.user.id);
+
 };

@@ -8,5 +8,5 @@ export const getJobQueue = async (db: Database, id: string) => {
     });
   });
 
-  return existing as { id: string; slack_id: string }[];
+  return existing as { id: string; slack_id: string, user_name?: string }[];
 };

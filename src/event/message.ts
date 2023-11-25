@@ -41,8 +41,8 @@ export const messageEvent = async (event: any) => {
 
     // wait list 宛にURLを送信
     const waitList = await getJobQueue(db, mailID);
-    for (const { slack_id } of waitList) {
-      await sendPostMessage(slack_id, mailInfo, file.permalink);
+    for (const { slack_id, user_name } of waitList) {
+      await sendPostMessage(slack_id, user_name, mailInfo, file.permalink);
       await updateJobQueueExecutionTime(db, mailID, slack_id);
     }
     db.close();

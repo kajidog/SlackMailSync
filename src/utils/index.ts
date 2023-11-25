@@ -52,3 +52,8 @@ export function formatDate(inputDateStr: string, timezone: string = 'Asia/Tokyo'
   const zonedDate = utcToZonedTime(parsedDate, timezone);
   return format(zonedDate, 'yyyy-MM-dd HH:mm');
 }
+
+// 文字列から重複をなくす
+export function removeDuplicates(arr: string[]): string[] {
+  return [...new Set(arr)];
+}

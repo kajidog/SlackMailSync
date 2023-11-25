@@ -9,4 +9,5 @@ export type Filter = {
   cc?: string;
   action_type: string;
   forward_channel?: string;
+  memo?: string;
 };

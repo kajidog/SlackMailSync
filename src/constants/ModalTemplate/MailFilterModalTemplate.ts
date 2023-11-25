@@ -1,9 +1,9 @@
 import { View } from '@slack/bolt';
 import { ViewSubmitViews } from '../../types/slack';
 import { AccountConfig } from 'account_config';
+import { Filter } from 'filter';
 
-export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
-
+export const MailFilterModalTemplate = (accountConfig: AccountConfig, filter?: Filter): View => {
   return {
     type: 'modal',
     submit: {
@@ -44,6 +44,7 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
         "element": {
           "type": "plain_text_input",
           "action_id": "filter_name",
+          initial_value: filter?.filter_name ?? "",
         },
         "label": {
           "type": "plain_text",
@@ -55,9 +56,25 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
       {
         "type": "input",
         "element": {
+          "type": "plain_text_input",
+          "action_id": "filter_memo",
+          initial_value: filter?.memo ?? "",
+        },
+        "label": {
+          "type": "plain_text",
+          "text": "メモ（転送時にこのテキストがメール情報に追加されます）",
+          "emoji": true
+        },
+        "block_id": "filter_memo",
+        "optional": true,
+      },
+      {
+        "type": "input",
+        "element": {
           "type": "number_input",
           "is_decimal_allowed": false,
           "action_id": "priority",
+          initial_value: String(filter?.priority || 0),
         },
         "label": {
           "type": "plain_text",
@@ -88,7 +105,8 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
         "optional": true,
         "element": {
           "type": "plain_text_input",
-          "action_id": "subject"
+          "action_id": "subject",
+          initial_value: filter?.subject ?? "",
         },
         "label": {
           "type": "plain_text",
@@ -101,7 +119,8 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
         "optional": true,
         "element": {
           "type": "plain_text_input",
-          "action_id": "from"
+          "action_id": "from",
+          initial_value: filter?.from ?? "",
         },
         "label": {
           "type": "plain_text",
@@ -115,7 +134,9 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
         "optional": true,
         "element": {
           "type": "plain_text_input",
-          "action_id": "to"
+          "action_id": "to",
+          initial_value: filter?.to ?? "",
+
         },
         "label": {
           "type": "plain_text",
@@ -128,7 +149,8 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
         "type": "input",
         "element": {
           "type": "plain_text_input",
-          "action_id": "cc"
+          "action_id": "cc",
+          initial_value: filter?.cc ?? "",
         },
         "label": {
           "type": "plain_text",
@@ -191,12 +213,12 @@ export const MailFilterModalTemplate = (accountConfig: AccountConfig): View => {
         "type": "input",
         "element": {
           "type": "multi_conversations_select",
-          "action_id": "forward_channel"
+          "action_id": "forward_channel",
         },
         "label": {
           "type": "plain_text",
           "text": "指定のチャンネル",
-          "emoji": true
+          "emoji": true,
         },
         "optional": true,
         "block_id": "forward_channel",
@@ -221,11 +243,11 @@ export type FilterValues = {
   cc?: string;
   action_type: string;
   forward_channel?: string;
-
+  memo?: string;
 };
 
 export const getFilterValue = (values: ViewSubmitViews): FilterValues => {
-  const { filter_name, priority, subject, from, to, cc, action_type, forward_channel, user_name } = values;
+  const { filter_name, priority, subject, from, to, cc, action_type, forward_channel, filter_memo } = values;
   return {
     filter_name: filter_name.filter_name.value,
     priority: parseInt(priority.priority.value),
@@ -233,6 +255,7 @@ export const getFilterValue = (values: ViewSubmitViews): FilterValues => {
     from: from?.from?.value,
     to: to?.to?.value,
     cc: cc?.cc?.value,
+    memo: filter_memo?.filter_memo?.value,
     action_type: action_type?.action_type?.selected_option.value,
     forward_channel: String(forward_channel?.forward_channel?.selected_conversations)
   };

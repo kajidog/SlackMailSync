@@ -37,7 +37,7 @@ export async function fetchNewMail(slackId: string, username: string) {
           resolve(-1);
           return;
         }
-        fetchNewEmails(imap, handleEmail(insertMailBox(db, slackId)), box.uidnext - 1).then(async ([count, imap]) => {
+        fetchNewEmails(imap, handleEmail(insertMailBox(db, slackId, username)), box.uidnext - 1).then(async ([count, imap]) => {
           await imap.end();
           db.close();
           resolve(count);

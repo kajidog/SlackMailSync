@@ -4,7 +4,8 @@ export const actionIds = {
   OPEN_MODAL_MAIL_FILTER: 'open_modal_mail_filter',
   MAIL_REPLAY: 'replay_mail',
   MAIL_FORWARD: 'forward_mail',
-  DELETE_CONFIG: 'delete_config'
+  DELETE_CONFIG: 'delete_config',
+  DELETE_FILTER: 'delete_filter',
 } as const;
 
 export const callbackIds = {
