@@ -8,3 +8,5 @@ services:
       - .:/app
     tty: true
     env_file: .env
+    command:  >
+      sh -c "npm install && npm run build"

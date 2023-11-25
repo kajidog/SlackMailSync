@@ -1,5 +1,5 @@
 {
-  "name": "zabbix_slack_app",
+  "name": "slack_mail_sync",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
