@@ -16,7 +16,9 @@ Slackでメールを受信し、検索時にSlackのやり取りとメールの�
 
 ### フィルター機能
 指定のチャンネルへ転送したりブロックができます。  
-<img width="478" alt="スクリーンショット 2023-11-13 16 48 02" src="https://github.com/ic-kokusai/SlackMailSync/assets/51894304/97387486-a795-445a-97a5-1f4c53b6b1dc">
+<img width="600" alt="スクリーンショット 2023-11-26 5 30 18" src="https://github.com/kajidog/SlackMailSync/assets/51894304/9a6696a3-3de4-4e1e-8deb-e0cd837b9634">
+<img width="550" alt="スクリーンショット 2023-11-26 5 38 43" src="https://github.com/kajidog/SlackMailSync/assets/51894304/863da990-f23f-4bf5-942a-25dfe2f751a8">
+
 
 ## 動作環境構築手順
 
